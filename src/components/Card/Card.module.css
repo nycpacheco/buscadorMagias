@@ -1,0 +1,229 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-medium);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.emblemWrap {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: rgba(124, 58, 237, 0.14);
+  border: 1px solid var(--border-subtle);
+}
+
+.emblemEmoji {
+  font-size: 1.45rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.titleBlock {
+  min-width: 0;
+  flex: 1;
+}
+
+.metaLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.levelText {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-white);
+  overflow-wrap: break-word;
+}
+
+.favoriteButton {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.favoriteButton:hover {
+  transform: scale(1.06);
+  background-color: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fde68a;
+}
+
+.favoriteButtonActive {
+  background-color: rgba(251, 191, 36, 0.18);
+  border-color: rgba(251, 191, 36, 0.6);
+  color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.18);
+}
+
+.favoriteButtonActive:hover {
+  background-color: rgba(251, 191, 36, 0.26);
+  color: #fcd34d;
+}
+
+.specsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 0;
+  margin-bottom: 14px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.specItem {
+  min-width: 0;
+}
+
+.specLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.specValue {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary {
+  flex: 1;
+  font-size: 0.915rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.cardFooter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.detailButton {
+  flex: 1;
+  min-height: 42px;
+  padding: 10px 14px;
+  background-color: var(--purple-accent);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.detailButton:hover {
+  background-color: var(--purple-accent-hover);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.detailButton:active {
+  transform: translateY(1px);
+}
+
+.grimoireActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 10px 12px;
+  background-color: rgba(124, 58, 237, 0.16);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.grimoireActionButton:hover {
+  background-color: rgba(124, 58, 237, 0.32);
+  border-color: var(--border-strong);
+  color: var(--text-white);
+}
+
+.removeFromGrimoireButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 10px 12px;
+  background-color: rgba(185, 28, 28, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: var(--radius-sm);
+  color: #fecaca;
+  font-size: 0.84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.removeFromGrimoireButton:hover {
+  background-color: rgba(185, 28, 28, 0.3);
+  border-color: rgba(248, 113, 113, 0.6);
+  color: var(--text-white);
+}

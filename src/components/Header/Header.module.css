@@ -1,0 +1,69 @@
+.header {
+  margin-bottom: 28px;
+}
+
+.bannerCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(36, 20, 66, 0.94) 0%,
+    rgba(22, 11, 41, 0.96) 100%
+  );
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.kicker {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.2vw, 2.85rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-white);
+  text-wrap: balance;
+  letter-spacing: 0.015em;
+}
+
+.subtitle {
+  max-width: 68ch;
+  font-size: 0.985rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.catalogMeta {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.countNumber {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text-white);
+  margin-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .bannerCard {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 540px) {
+  .bannerCard {
+    padding: 18px;
+    gap: 10px;
+  }
+}

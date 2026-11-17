@@ -1,0 +1,148 @@
+.pageShell {
+  min-height: 100vh;
+  padding: 28px 24px 56px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1420px;
+  margin: 0 auto;
+}
+
+.workspaceLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.mainColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.spellsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 56px 24px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(196, 181, 253, 0.24);
+  border-top-color: var(--text-white);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.stateTitle {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.stateText {
+  max-width: 52ch;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.retryButton {
+  margin-top: 6px;
+  min-height: 42px;
+  padding: 10px 20px;
+  background-color: var(--purple-accent);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color var(--transition-fast);
+}
+
+.retryButton:hover {
+  background-color: var(--purple-accent-hover);
+}
+
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 200;
+  max-width: 380px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  color: var(--text-white);
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: toastSlide var(--transition-fast) ease-out;
+}
+
+.toastError {
+  background-color: rgba(127, 29, 29, 0.95);
+  border-color: rgba(248, 113, 113, 0.65);
+  color: #fee2e2;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes toastSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 960px) {
+  .workspaceLayout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .mainColumn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .pageShell {
+    padding: 16px 14px 40px;
+  }
+
+  .spellsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .toast {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    max-width: none;
+  }
+}

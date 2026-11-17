@@ -1,0 +1,331 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.toolbarTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toolbarTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.toolbarMeta {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 18px;
+  background-color: var(--purple-accent);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--transition-fast);
+}
+
+.primaryBtn:hover {
+  background-color: var(--purple-accent-hover);
+}
+
+.grimoiresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 20px;
+}
+
+.grimoireCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  background: linear-gradient(
+    155deg,
+    rgba(36, 20, 66, 0.9) 0%,
+    rgba(24, 12, 46, 0.96) 100%
+  );
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.grimoireCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-medium);
+}
+
+.grimoireCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.tomeEmblem {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: rgba(124, 58, 237, 0.2);
+  border: 1px solid var(--border-medium);
+  color: var(--text-muted);
+}
+
+.grimoireTitleWrap {
+  min-width: 0;
+  flex: 1;
+}
+
+.grimoireName {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.25;
+  margin-bottom: 4px;
+  overflow-wrap: break-word;
+}
+
+.spellCountBadge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.grimoireDesc {
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.grimoireDescEmpty {
+  flex: 1;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: rgba(196, 181, 253, 0.6);
+}
+
+.grimoireActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.openBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 14px;
+  background-color: var(--purple-accent);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-sm);
+  color: var(--text-white);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.openBtn:hover {
+  background-color: var(--purple-accent-hover);
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background-color: rgba(124, 58, 237, 0.14);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.iconBtn:hover {
+  background-color: rgba(124, 58, 237, 0.3);
+  border-color: var(--border-medium);
+  color: var(--text-white);
+}
+
+.iconDangerBtn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background-color: rgba(185, 28, 28, 0.14);
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  color: #fecaca;
+}
+
+.iconDangerBtn:hover {
+  background-color: rgba(185, 28, 28, 0.28);
+  border-color: rgba(248, 113, 113, 0.58);
+  color: var(--text-white);
+}
+
+/* Detail view of an open grimoire */
+.detailHeaderCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+}
+
+.detailTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(124, 58, 237, 0.14);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.backBtn:hover {
+  background-color: rgba(124, 58, 237, 0.28);
+  color: var(--text-white);
+}
+
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(124, 58, 237, 0.18);
+  border: 1px solid var(--border-medium);
+  color: var(--text-white);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.secondaryBtn:hover {
+  background-color: rgba(124, 58, 237, 0.34);
+}
+
+.dangerOutlineBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(185, 28, 28, 0.14);
+  border: 1px solid rgba(248, 113, 113, 0.36);
+  color: #fecaca;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.dangerOutlineBtn:hover {
+  background-color: rgba(185, 28, 28, 0.28);
+  color: var(--text-white);
+}
+
+.detailTitle {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.detailDesc {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.spellsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 20px;
+}
+
+.emptyBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 52px 24px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.emptyText {
+  max-width: 50ch;
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 540px) {
+  .grimoiresGrid,
+  .spellsGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Grimório Arcano — Buscador de Magias D&D 5e",
+  "description": "Catálogo interativo para consultar, pesquisar e filtrar magias de D&D 5e com cache local em JSON e visualização detalhada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
