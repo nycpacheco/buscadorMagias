@@ -1,227 +1,345 @@
-# Grimório Arcano — Biblioteca Pessoal de Magias D&D 5e
+# Grimório Arcano — Biblioteca de Magias D&D 5e
 
-Aplicação web full-stack para consultar magias de **Dungeons & Dragons 5ª Edição** diretamente pela API pública D&D 5e, favoritar magias e organizar múltiplos grimórios personalizados com persistência relacional local em **SQLite3** e backend **Python (Flask)** orientado a objetos.
+Uma biblioteca pessoal de magias para **Dungeons & Dragons 5ª Edição**, onde é possível pesquisar magias, consultar seus detalhes, favoritar e organizar tudo em grimórios personalizados.
 
----
-
-## 1. Objetivo da Aplicação
-
-Evoluir o buscador original de magias de D&D 5e para uma biblioteca arcana pessoal completa, permitindo que jogadores e mestres:
-
-- Pesquisem e filtrem magias diretamente da API pública D&D 5e (`https://www.dnd5eapi.co`).
-- Consultem detalhes completos das magias (escola, nível, componentes, dano, escalonamento, salvaguarda, área de efeito e classes).
-- Marquem e desmarquem magias favoritas de forma independente.
-- Criem, editem, consultem e excluam quantos grimórios personalizados desejarem.
-- Adicionem a mesma magia a múltiplos grimórios e removam magias de um grimório sem afetar favoritos ou outros grimórios.
-- Consultem suas favoritas e seus grimórios mesmo quando a API externa estiver indisponível, utilizando os dados persistidos localmente no banco SQLite3.
+O projeto utiliza a API pública do D&D 5e para buscar as magias e conta com um backend em Python (Flask) e banco de dados SQLite3 para armazenar favoritos e grimórios, permitindo consultar os dados salvos mesmo quando a API estiver indisponível.
 
 ---
 
-## 2. Funcionalidades Disponíveis
+## Funcionalidades
 
-- **Barra lateral de navegação responsiva** com três áreas principais:
-  - **Pesquisar magias**: buscador com pesquisa por nome (ignorando acentos) e filtros por escola, nível, tempo de conjuração e tipo de dano.
-  - **Favoritas**: listagem das magias favoritadas armazenadas no SQLite, com os mesmos cards detalhados do buscador e opção de adicionar a grimórios ou desfavoritar.
-  - **Meus grimórios**: criação, edição (nome e descrição), abertura, inclusão/remoção individual de magias e exclusão com diálogo de confirmação.
-- **Sistema de favoritos independente**: estrela interativa nos cards e no modal de detalhes, com persistência imediata no SQLite.
-- **Sistema de grimórios muitos-para-muitos**: uma magia pode pertencer a vários grimórios; um grimório pode conter várias magias; duplicatas no mesmo grimório são impedidas por validação de serviço e constraint `UNIQUE`.
-- **Feedback visual e resiliência**: notificações discretas (toasts), estados de carregamento, estados vazios informativos e tratamento de erros de rede/API.
+### Pesquisa de magias
+
+- Busca por nome, ignorando diferenças de acentuação.
+- Filtros por escola de magia, nível, tempo de conjuração e tipo de dano.
+- Visualização dos detalhes de cada magia, incluindo componentes, alcance, duração, descrição, dano, escalonamento e classes.
+
+### Favoritos
+
+- Adicionar e remover magias dos favoritos.
+- Acesso rápido a todas as magias favoritas.
+- Persistência dos dados no SQLite.
+- Possibilidade de adicionar favoritas aos grimórios sem perder o vínculo com os favoritos.
+
+### Grimórios personalizados
+
+- Criar quantos grimórios quiser.
+- Editar nome e descrição.
+- Adicionar e remover magias individualmente.
+- Excluir grimórios com confirmação.
+- Adicionar a mesma magia em diferentes grimórios.
+- Impedir que uma magia seja adicionada duas vezes ao mesmo grimório.
+
+### Outros recursos
+
+- Interface responsiva com navegação lateral.
+- Notificações para ações realizadas.
+- Estados de carregamento e listas vazias.
+- Tratamento de erros na comunicação com a API e o servidor.
+- Cache local para reduzir consultas externas.
+- Consulta offline das magias salvas em favoritos e grimórios.
 
 ---
 
-## 3. Tecnologias Utilizadas
+## Tecnologias utilizadas
 
 ### Frontend
-- **React 19** (JavaScript / JSX)
-- **Vite** (empacotador e servidor de desenvolvimento)
-- **CSS Modules** (`*.module.css`) com variáveis CSS temáticas
-- **Lucide React** (ícones vetoriais)
+
+| Tecnologia   | Utilização                                         |
+| ------------ | -------------------------------------------------- |
+| React        | Construção da interface e gerenciamento de estado |
+| Vite         | Servidor de desenvolvimento e build               |
+| CSS Modules  | Estilização dos componentes                       |
+| Lucide React | Ícones da interface                               |
 
 ### Backend
-- **Python 3.10+** (Orientação a Objetos)
-- **Flask** + **Flask-CORS** (API REST HTTP/JSON)
-- **SQLite3** (banco de dados relacional nativo do Python, com `PRAGMA foreign_keys = ON`)
-- **Requests** (cliente HTTP para integração com a API D&D 5e)
+
+| Tecnologia        | Utilização                           |
+| ----------------- | ------------------------------------ |
+| Python 3.10+      | Linguagem principal do backend      |
+| Flask             | Criação da API REST                  |
+| Flask-CORS        | Comunicação entre frontend e backend |
+| Requests          | Requisições à API externa            |
+| SQLite3           | Banco de dados relacional            |
+| Unittest / Pytest | Testes automatizados                 |
+
+### API externa
+
+- [D&D 5e API](https://www.dnd5eapi.co/) — utilizada para consultar a lista de magias e seus respectivos detalhes.
 
 ---
 
-## 4. Arquitetura Geral
+## Estrutura do projeto
 
-A arquitetura separa claramente apresentação, comunicação HTTP, regras de negócio, acesso a dados e integração externa:
-
-1. **Frontend (React + CSS Modules)** envia requisições HTTP/JSON para `/api/*` (nunca acessa o SQLite diretamente).
-2. **Camada de Rotas (`backend/routes/api_routes.py`)**: recebe requisições HTTP, delega ao serviço e retorna JSON padronizado com tratamento centralizado de exceções.
-3. **Camada de Serviços (`backend/services/`)**:
-   - `DndApiService`: consulta a API D&D 5e (`pt-BR`), aplica retentativas e gerencia o cache local `data/spells-cache.json`.
-   - `LibraryService`: implementa regras de negócio de favoritos, grimórios, validação de campos e independência entre entidades.
-4. **Camada de Repositórios (`backend/repositories/`)**: encapsula consultas SQL parametrizadas e transações (`SpellRepository`, `FavoriteRepository`, `GrimoireRepository`).
-5. **Camada de Modelos (`backend/models/entities.py`)**: classes OOP (`Spell`, `Favorite`, `Grimoire`, `GrimoireSpell`).
-6. **Camada de Banco (`backend/database/db_manager.py`)**: gerencia conexões SQLite, ativa chaves estrangeiras e executa inicialização/migração automática via `PRAGMA user_version`.
-
----
-
-## 5. Estrutura de Pastas
+O projeto foi organizado separando a interface, as rotas da API, as regras de negócio e o acesso ao banco de dados.
 
 ```text
 .
-├── app.py                              # Ponto de entrada do backend Python Flask
-├── requirements.txt                    # Dependências Python
-├── server.js                           # Proxy/host de desenvolvimento (porta 3000 -> Flask 5000)
-├── package.json                        # Scripts e dependências do frontend
-├── vite.config.js                      # Configuração Vite + proxy /api -> Flask
-├── index.html                          # HTML principal
-├── README.md                           # Documentação do projeto
+├── app.py
+├── requirements.txt
+├── package.json
+├── vite.config.js
+├── index.html
+├── README.md
+│
 ├── data/
-│   ├── spells-cache.json               # Cache local opcional da listagem D&D 5e
-│   └── grimoire.db                     # Banco SQLite3 (gerado automaticamente na 1ª execução)
+│   ├── spells-cache.json
+│   └── grimoire.db
+│
 ├── backend/
-│   ├── config.py                       # Constantes e caminhos de configuração
+│   ├── config.py
 │   ├── database/
-│   │   └── db_manager.py               # Conexão SQLite3, PRAGMA foreign_keys e migrações
+│   │   └── db_manager.py
 │   ├── models/
-│   │   └── entities.py                 # Classes OOP (Spell, Favorite, Grimoire, GrimoireSpell)
+│   │   └── entities.py
 │   ├── repositories/
-│   │   ├── spell_repository.py         # Persistência da tabela spells e limpeza de órfãs
-│   │   ├── favorite_repository.py      # CRUD da tabela favorites
-│   │   └── grimoire_repository.py      # CRUD de grimoires e grimoire_spells
+│   │   ├── spell_repository.py
+│   │   ├── favorite_repository.py
+│   │   └── grimoire_repository.py
 │   ├── services/
-│   │   ├── exceptions.py               # Exceções de domínio (400, 404, 409, 502)
-│   │   ├── dnd_api_service.py          # Integração HTTP com a API D&D 5e
-│   │   └── library_service.py          # Regras de negócio da biblioteca pessoal
+│   │   ├── exceptions.py
+│   │   ├── dnd_api_service.py
+│   │   └── library_service.py
 │   ├── routes/
-│   │   └── api_routes.py               # Controlador REST Flask (/api/*)
+│   │   └── api_routes.py
 │   └── tests/
-│       └── test_library.py             # Testes automatizados do banco, OOP e API Flask
+│       └── test_library.py
+│
 └── src/
-    ├── App.jsx                         # Aplicação principal e estado das 3 áreas
+    ├── App.jsx
     ├── App.module.css
     ├── main.jsx
     ├── index.css
+    │
     ├── services/
-    │   └── apiClient.js                # Cliente HTTP/JSON para o backend Python
+    │   └── apiClient.js
+    │
     ├── utils/
-    │   ├── spellHelpers.js             # Formatação, tradução e filtragem de magias
-    │   └── spellHelpers.test.js        # Testes unitários das funções auxiliares
+    │   ├── spellHelpers.js
+    │   └── spellHelpers.test.js
+    │
     └── components/
-        ├── Sidebar/                    # Barra lateral responsiva de navegação
-        ├── Header/                     # Cabeçalho contextualizado
-        ├── Filter/                     # Barra de pesquisa e filtros
-        ├── Card/                       # Card de magia com estrela e ação de grimório
-        ├── CardModal/                  # Modal de detalhes completos da magia
-        ├── GrimoiresView/              # Listagem e visualização interna de grimórios
-        ├── GrimoireFormModal/          # Formulário de criação/edição de grimório
-        ├── AddToGrimoireModal/         # Associação de uma magia a múltiplos grimórios
-        ├── SpellPickerModal/           # Seletor de magias dentro de um grimório
-        └── ConfirmDialog/              # Confirmação antes de excluir grimório
+        ├── Sidebar/
+        ├── Header/
+        ├── Filter/
+        ├── Card/
+        ├── CardModal/
+        ├── GrimoiresView/
+        ├── GrimoireFormModal/
+        ├── AddToGrimoireModal/
+        ├── SpellPickerModal/
+        └── ConfirmDialog/
 ```
 
 ---
 
-## 6. Modelagem do Banco de Dados SQLite3 (4 Tabelas Relacionais)
+## Banco de dados
 
-O banco é criado automaticamente em `data/grimoire.db` com `PRAGMA foreign_keys = ON`.
+O SQLite3 é utilizado para armazenar as magias consultadas, os favoritos e os grimórios criados pelo usuário.
 
-### 1. `spells`
-Armazena os detalhes completos das magias salvas localmente (favoritadas ou vinculadas a grimórios), permitindo consulta offline sem depender de novas requisições à API.
-- `id` (`INTEGER PRIMARY KEY AUTOINCREMENT`)
-- `api_index` (`TEXT NOT NULL UNIQUE`) — identificador da magia na API D&D 5e (ex.: `fireball`)
-- `name`, `level`, `school_index`, `school_name`, `casting_time`, `spell_range`, `components`, `material`, `duration`, `ritual`, `concentration`, `description`, `higher_level`, `additional_info`, `raw_data`, `updated_at`
+O banco `data/grimoire.db` é criado automaticamente na primeira execução, com suporte a chaves estrangeiras e controle de versão utilizando `PRAGMA user_version`.
 
-### 2. `favorites`
-Armazena as magias favoritadas pelo usuário.
-- `id` (`INTEGER PRIMARY KEY AUTOINCREMENT`)
-- `spell_id` (`INTEGER NOT NULL UNIQUE`) — `FOREIGN KEY (spell_id) REFERENCES spells(id) ON DELETE CASCADE`
-- `created_at` (`TEXT NOT NULL`)
+### Tabelas
 
-### 3. `grimoires`
-Armazena os grimórios criados pelo usuário.
-- `id` (`INTEGER PRIMARY KEY AUTOINCREMENT`)
-- `name` (`TEXT NOT NULL`)
-- `description` (`TEXT NOT NULL DEFAULT ''`)
-- `created_at` (`TEXT NOT NULL`)
-- `updated_at` (`TEXT NOT NULL`)
+O banco possui quatro tabelas principais:
 
-### 4. `grimoire_spells`
-Tabela associativa muitos-para-muitos (`N:N`) entre `grimoires` e `spells`.
-- `id` (`INTEGER PRIMARY KEY AUTOINCREMENT`)
-- `grimoire_id` (`INTEGER NOT NULL`) — `FOREIGN KEY (grimoire_id) REFERENCES grimoires(id) ON DELETE CASCADE`
-- `spell_id` (`INTEGER NOT NULL`) — `FOREIGN KEY (spell_id) REFERENCES spells(id) ON DELETE CASCADE`
-- `added_at` (`TEXT NOT NULL`)
-- Constraint `UNIQUE (grimoire_id, spell_id)` impedindo magias duplicadas no mesmo grimório.
+| Tabela            | Descrição                                   |
+| ----------------- | ------------------------------------------- |
+| `spells`          | Armazena os dados completos das magias.     |
+| `favorites`       | Registra as magias marcadas como favoritas. |
+| `grimoires`       | Armazena os grimórios personalizados.       |
+| `grimoire_spells` | Relaciona magias e grimórios.               |
 
-### Regras de Independência
-- Favoritar uma magia **não** a adiciona a nenhum grimório.
-- Desfavoritar uma magia **não** a remove dos grimórios aos quais pertence.
-- Remover uma magia de um grimório ou excluir um grimório **não** apaga os favoritos nem outros grimórios.
-- A remoção automática da tabela `spells` só ocorre quando a magia não pertence mais nem a `favorites` nem a `grimoire_spells`.
+### Relacionamento entre as tabelas
+
+A relação entre magias e grimórios é de muitos-para-muitos (N:N). Isso permite que uma mesma magia esteja presente em vários grimórios, enquanto cada grimório pode conter diversas magias.
+
+A tabela associativa `grimoire_spells` possui uma restrição `UNIQUE (grimoire_id, spell_id)` para impedir duplicatas dentro do mesmo grimório.
+
+### Regras de independência
+
+Favoritos e grimórios funcionam de maneira independente:
+
+- Favoritar uma magia não a adiciona automaticamente a um grimório.
+- Remover uma magia dos favoritos não afeta os grimórios em que ela está presente.
+- Remover uma magia de um grimório não altera seus favoritos.
+- Excluir um grimório não apaga as magias dos outros grimórios nem os favoritos.
+- Uma magia só é removida da tabela `spells` quando não possui mais vínculos com favoritos ou grimórios.
 
 ---
 
-## 7. Instalação e Execução do Zero
+## Instalação e execução
 
 ### Pré-requisitos
-- **Python 3.10+** (com `sqlite3` nativo e `pip`)
-- **Node.js 20+** e **npm**
 
-### 1. Instalar dependências do Backend Python
+Antes de começar, é necessário ter instalado:
+
+- Python 3.10 ou superior.
+- Node.js 20 ou superior.
+- npm.
+
+### 1. Clonar o projeto
+
+```bash
+git clone <url-do-repositorio>
+cd <nome-do-projeto>
+```
+
+### 2. Configurar o backend
+
+Crie e ative um ambiente virtual:
+
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate   # No Windows: .venv\Scripts\activate
+```
+
+**Linux / macOS:**
+
+```bash
+source .venv/bin/activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Instale as dependências:
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Instalar dependências do Frontend
+### 3. Configurar o frontend
+
+Na raiz do projeto, execute:
+
 ```bash
 npm install
 ```
 
-### 3. Executar em ambiente de desenvolvimento
+### 4. Iniciar a aplicação
 
-#### Opção A — Em dois terminais (recomendado para desenvolvimento local)
-Terminal 1 (Backend Python Flask na porta `5000`):
+Abra dois terminais.
+
+**Terminal 1 — Backend (Flask):**
+
 ```bash
 python3 app.py
 ```
 
-Terminal 2 (Frontend Vite na porta `3000`, com proxy automático `/api` → `5000`):
+O backend será iniciado na porta `5000`.
+
+**Terminal 2 — Frontend (React + Vite):**
+
 ```bash
 npm run dev:frontend
 ```
 
-#### Opção B — Comando único integrado
+O frontend será iniciado na porta `3000`.
+
+Também é possível iniciar os dois serviços de uma vez, caso esteja utilizando o script unificado:
+
 ```bash
 npm run dev
 ```
-O `server.js` inicia automaticamente o backend Python Flask (`app.py` na porta `5000`) e serve o frontend Vite na porta `3000`, encaminhando todas as chamadas `/api/*` ao servidor Python.
 
-Acesse no navegador: `http://localhost:3000`
+Depois, acesse:
 
----
-
-## 8. Integração com a API D&D 5e e Banco SQLite
-
-- O endpoint `GET /api/spells` no backend Python consulta `https://www.dnd5eapi.co/api/2014/spells?lang=pt-BR` e os detalhes de cada magia, mantendo `data/spells-cache.json` como cache de aceleração (com opção `?refresh=true` para forçar atualização).
-- Sempre que o usuário favorita uma magia ou a adiciona a um grimório, o backend garante que os dados completos da magia estejam salvos na tabela `spells` do SQLite (`data/grimoire.db`).
-- Assim, as áreas **Favoritas** e **Meus grimórios** funcionam integralmente com dados locais mesmo se a API D&D 5e ficar indisponível.
+[http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 9. Testes Automatizados
+## Integração com a D&D 5e API
 
-### Testes do Backend (Python + SQLite3 + Flask)
+O backend consulta a API pública do D&D 5e para obter a lista de magias e seus detalhes.
+
+O endpoint utilizado para a listagem é:
+
+```http
+GET /api/spells
+```
+
+A consulta é feita através da API externa:
+
+```text
+https://www.dnd5eapi.co/api/2014/spells?lang=pt-BR
+```
+
+Os resultados são armazenados em cache no arquivo `data/spells-cache.json`, evitando consultas desnecessárias.
+
+Também é possível forçar uma nova sincronização utilizando:
+
+```http
+GET /api/spells?refresh=true
+```
+
+Quando uma magia é favoritada ou adicionada a um grimório, seus dados completos são salvos no SQLite3. Dessa forma, as áreas de favoritos e grimórios continuam funcionando mesmo sem conexão com a API externa.
+
+---
+
+## Como utilizar
+
+### Pesquisar magias
+
+1. Acesse **Pesquisar magias** pela barra lateral.
+2. Digite o nome da magia ou utilize os filtros disponíveis.
+3. Clique em **Detalhar** para consultar todas as informações.
+4. Utilize a estrela para adicionar ou remover uma magia dos favoritos.
+5. Clique em **Grimório** para adicionar a magia a um ou mais grimórios.
+
+### Favoritas
+
+1. Acesse a área **Favoritas**.
+2. Consulte todas as magias que foram salvas.
+3. Abra os detalhes ou adicione uma magia a algum grimório.
+4. Clique novamente na estrela para remover dos favoritos.
+
+A remoção dos favoritos não interfere nos grimórios.
+
+### Meus grimórios
+
+1. Acesse **Meus grimórios**.
+2. Clique em **Novo grimório**.
+3. Informe o nome e, opcionalmente, uma descrição.
+4. Clique em **Abrir** para visualizar as magias salvas.
+5. Utilize **+ Adicionar magias** para incluir novas magias.
+6. Utilize **Remover** para retirar uma magia daquele grimório.
+7. Use **Editar** para alterar o nome ou a descrição.
+8. Para excluir um grimório, utilize a opção **Excluir grimório** e confirme a ação.
+
+---
+
+## Testes automatizados
+
+O projeto possui testes para verificar o funcionamento do backend, das operações no banco de dados e das funções auxiliares do frontend.
+
+### Backend
+
+Testes com Python, SQLite3 e Flask:
+
 ```bash
 python3 -m unittest discover -s backend/tests -v
 ```
 
-### Testes dos Helpers do Frontend (JavaScript)
+### Frontend
+
+Testes dos helpers JavaScript:
+
 ```bash
 npm run test:js
 ```
 
 ---
 
-## 10. Como Utilizar a Aplicação
+## Observações
 
-1. **Pesquisar magias**: digite o nome da magia ou combine filtros por escola, nível, tempo de conjuração e tipo de dano. Clique em **Detalhar** para ver todas as propriedades, **⭐** para favoritar ou **Grimório** para associar a um grimório.
-2. **Favoritas**: acesse pela barra lateral para consultar suas magias favoritas, adicioná-las a grimórios ou removê-las dos favoritos.
-3. **Meus grimórios**: crie novos grimórios informando nome e descrição, abra um grimório para adicionar/remover magias, edite suas informações ou exclua com confirmação segura.
+- O banco de dados é criado automaticamente na primeira execução.
+- O arquivo de cache das magias fica em `data/spells-cache.json`.
+- Os dados salvos localmente permitem consultar favoritos e grimórios sem depender da disponibilidade da API externa.
+- O frontend utiliza o proxy configurado no Vite para encaminhar as requisições `/api` ao backend Flask.
+
+---
+
+**Grimório Arcano** — Suas magias, seus grimórios, suas aventuras.
